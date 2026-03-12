@@ -6,6 +6,11 @@ from django.utils import timezone
 
 from .models import Question
 
+from django.test import SimpleTestCase, TransactionTestCase, LiveServerTestCase
+from django.urls import resolve
+from .views import IndexView
+import requests
+
 
 class QuestionModelTests(TestCase):
     def test_was_published_recently_with_future_question(self):
@@ -127,9 +132,38 @@ class QuestionDetailViewTests(TestCase):
 
 
 
-
-
-
+class URLTests(SimpleTestCase):
+    def test_polls_index_url_resolves(self):
+        """
+        Test that /polls/ URL resolves to IndexView
+        No DB access
+        """
+        resolver = resolve('/polls/')
+        self.assertEqual(resolver.func.view_class, IndexView)
+        
+class QuestionTransactionTests(TransactionTestCase):
+    def test_question_creation_transaction(self):
+        """
+        Test creating and saving a Question using real DB transac
+        """
+        question = Question.objects.create(
+            question_text="Transaction Test Question",
+            pub_date=timezone.now()
+        )
+        
+        self.assertEqual(Question.objects.count(), 1)
+        self.assertEqual(question.question_text, "Transaction Test Question")
+        
+class PollsLiveServerTests(LiveServerTestCase):
+    def test_polls_index_page_status_code(self):
+        """
+        Start live Django test server
+        check that polls index page returns HTTP 200.
+        """
+        url = f"{self.live_server_url}/polls/"
+        response = requests.get(url)
+        
+        self.assertEqual(response.status_code, 200)
 
 
 
