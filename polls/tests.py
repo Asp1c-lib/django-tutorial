@@ -9,7 +9,6 @@ from .models import Question
 from django.test import SimpleTestCase, TransactionTestCase, LiveServerTestCase
 from django.urls import resolve
 from .views import IndexView
-import requests
 
 
 class QuestionModelTests(TestCase):
@@ -160,11 +159,8 @@ class PollsLiveServerTests(LiveServerTestCase):
         Start live Django test server
         check that polls index page returns HTTP 200.
         """
-        url = f"{self.live_server_url}/polls/"
-        response = requests.get(url)
-        
+        response = self.client.get("/polls/")
         self.assertEqual(response.status_code, 200)
-
 
 
 
