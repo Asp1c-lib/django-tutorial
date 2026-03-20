@@ -23,10 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^-^f+y%c4*29d36te@(-fh_n5ox0&ytkolay!d8ua-qwknh*5c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -38,8 +37,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "debug_toolbar",
-
 ]
 
 MIDDLEWARE = [
@@ -50,7 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -119,7 +116,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+import os
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -131,7 +131,15 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+import dj_database_url
 
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+}
+
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 
 
