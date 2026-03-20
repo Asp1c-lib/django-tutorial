@@ -131,6 +131,7 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+"""
 import os
 import dj_database_url
 from pathlib import Path
@@ -141,6 +142,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASES = dj_database_url.config(
     default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 )
+"""
 
 if DEBUG:
     INSTALLED_APPS += ['debug_toolbar']
